@@ -11,9 +11,12 @@ public class Recibo implements ModelDao {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @ManyToOne
-    public Cliente cliente;
+    private Cliente cliente;
     @ManyToOne
-    public Aluguel aluguel;
-    public Double valorTotal;
-    public Double diarias;
+    private Aluguel aluguel;
+    private Double valorTotal;
+    private Double diarias;
+    @OneToOne
+    private Residencia residencia;
+
 }
