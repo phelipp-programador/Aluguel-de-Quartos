@@ -15,7 +15,7 @@
 	<description>Criação de um sistema de locação de quarto </description>
 
 	<properties>
-		<java.version>15</java.version>
+		<java.version>14</java.version>
 	</properties>
 
 	<dependencies>
@@ -43,6 +43,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext7-core</artifactId>
+			<version>7.1.11</version>
+			<type>pom</type>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
