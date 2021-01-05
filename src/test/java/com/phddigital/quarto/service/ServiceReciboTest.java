@@ -17,6 +17,7 @@ class ServiceReciboTest {
         Cliente cliente = new Cliente();
         aluguel.setDataSaida(LocalDateTime.now());
         Recibo recibo = new Recibo();
+        recibo.setId(1);
         recibo.setAluguel(aluguel);
         recibo.setCliente(cliente);
         return recibo;
