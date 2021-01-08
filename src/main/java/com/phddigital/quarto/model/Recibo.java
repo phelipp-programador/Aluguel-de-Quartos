@@ -5,15 +5,12 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
-@Entity
-public class Recibo implements ModelDao {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class Recibo {
     private Integer id;
-    @ManyToOne
-    public Cliente cliente;
-    @ManyToOne
-    public Aluguel aluguel;
-    public Double valorTotal;
-    public Double diarias;
+    private Cliente cliente;
+    private Aluguel aluguel;
+    private Double valorTotal;
+    private Integer diarias;
+    private Residencia residencia;
+
 }
