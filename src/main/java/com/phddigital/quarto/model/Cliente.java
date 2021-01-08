@@ -1,11 +1,9 @@
 package com.phddigital.quarto.model;
 
+import com.phddigital.quarto.validation.CPF;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -14,9 +12,11 @@ public class Cliente implements ModelDao {
     @GeneratedValue
     private Integer id;
     public String nome;
+    @Column(unique = true)
+    @CPF(messsage = "CPF inválido ")
     public String cpf;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     public Endereco endereco;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     public Contato contato;
 }

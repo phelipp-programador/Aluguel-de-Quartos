@@ -15,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalTime;
 
 @Service
 public class ServiceRecibo implements ServiceDao {
+
     private ServiceAluguel serviceAluguel;
 
     @Autowired
@@ -25,15 +27,24 @@ public class ServiceRecibo implements ServiceDao {
         this.serviceAluguel = serviceAluguel;
     }
 
+    public Recibo init(Recibo recibo) {
+        LocalTime horaLimiteDiaria = recibo.getResidencia().getHoraLimiteDiaria();
+        Double valorTotal = serviceAluguel.calcularValor(recibo.getAluguel(), horaLimiteDiaria);
+        Integer diarias = serviceAluguel.calculaDiaria(recibo.getAluguel(), horaLimiteDiaria);
+        recibo.setDiarias(diarias);
+        recibo.setValorTotal(valorTotal);
+        return recibo;
+    }
+
     public void gerarPdf(Recibo recibo) throws IOException {
+        recibo = init(recibo);
         PdfDocument pdfDoc = new PdfDocument(new PdfWriter("./Recibo_" + recibo.getId() + ".pdf"));
         Document doc = new Document(pdfDoc);
         Table table = createCabecalho(recibo.getResidencia());
         float tableWidth = doc.getPdfDocument().getDefaultPageSize().getWidth()
                 - (doc.getLeftMargin() + doc.getRightMargin());
         table.setWidth(tableWidth);
-
-
+        
         doc.add(table);
         doc.close();
     }

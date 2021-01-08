@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -20,34 +22,46 @@ import java.util.Optional;
 public class ServiceAluguel implements ServiceDao {
     private ClienteRepository repository;
     private Aluguel aluguel;
+
     @Autowired
     public ServiceAluguel(ClienteRepository repository) {
         this.repository = repository;
     }
 
     /**
+     *
      */
-    public Long calculaDiaria(LocalDateTime entrada, LocalDateTime saida, Integer horaCorte) {
-        Long hora = ChronoUnit.HOURS.between(entrada, saida);
-        Long days= (hora/24);
-        if(days==0){
-            days=1L;
-        }
-        else if(hora>horaCorte){
-            days++;
-        }
+    public Integer calculaDiaria(LocalDateTime data_entrada, LocalDateTime data_saida, LocalTime limiteDiaria) {
+        int dayIncrement = 0;
+        int intervalo = Period.between(data_entrada.toLocalDate(), data_saida.toLocalDate()).getDays();
+        if ((data_entrada.toLocalTime().isBefore(limiteDiaria)
+                && data_saida.toLocalTime().isAfter(limiteDiaria))
+                || (data_saida.toLocalTime().isAfter(limiteDiaria) && data_entrada.isBefore(data_saida))) {
 
+            dayIncrement++;
+        }
+        return (intervalo == 0) ? 1 + dayIncrement : intervalo + dayIncrement;
 
-        return days;
     }
-    public Double calcularValor(Aluguel aluguel){
-        LocalDateTime dataEntrada = aluguel.getDataEntrada();
-        LocalDateTime dataSaida = aluguel.getDataSaida();
-        Double valorDiaria = aluguel.getQuarto().getValorDiaria();
-        Double valor = calculaDiaria(dataEntrada,dataSaida,12)*valorDiaria;
-        return valor;
+    public Integer calculaDiaria(Aluguel aluguel,LocalTime limiteHoraDiaria){
+        return calculaDiaria(aluguel.getDataEntrada(),aluguel.getDataSaida(),limiteHoraDiaria);
     }
 
+    public Double calcularValor(Integer diaria, Double valorDiaria) {
+        return diaria * valorDiaria;
+    }
+
+    public Double calcularValor(LocalDateTime data_entrada, LocalDateTime data_saida, LocalTime horaLimite, Double valorDiaria) {
+        return calculaDiaria(data_entrada, data_saida, horaLimite) * valorDiaria;
+    }
+
+    public Double calcularValor(Aluguel aluguel, LocalTime horaLimite) {
+        return calcularValor(aluguel.getDataEntrada(), aluguel.getDataSaida(), horaLimite, aluguel.getQuarto().getValorDiaria());
+    }
+
+    public Double calculaValor(Aluguel aluguel) {
+        return calcularValor(aluguel, LocalTime.of(12, 00));
+    }
 
     public Cliente save(Cliente entity) {
         Optional<Cliente> cliente = save(repository, entity);

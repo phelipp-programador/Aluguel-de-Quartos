@@ -28,4 +28,15 @@ public class ServiceCliente implements ServiceDao{
         Optional<List> select = select(repository);
         return select.orElseThrow(()->new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
+    public List<Cliente> select(String nome){
+        Optional<List<Cliente>> likeName = repository.findLikeName(nome);
+        return likeName.orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+
+
+    }
+    public Cliente select(Integer id){
+        Cliente cliente =  repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+        return cliente;
+    }
+
 }

@@ -2,6 +2,8 @@ package com.phddigital.quarto.service;
 
 import com.phddigital.quarto.model.ModelDao;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +18,5 @@ public interface ServiceDao {
         List all = repository.findAll();
         return (all.size()>0)?Optional.of(all):Optional.empty();
     }
+
 }
